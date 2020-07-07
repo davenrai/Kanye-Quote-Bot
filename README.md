@@ -1,4 +1,4 @@
-# Kanye-Quote-Machine
+# Kanye-Quote-Twitter-Bot
 
 Just a little project so I can familiarize myself with using different APIs. Utilizes Tweepy and https://kanye.rest/ (Andrew Jazbec @ajzbc) to tweet Kanye West quotes.
 
