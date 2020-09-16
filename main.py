@@ -1,6 +1,5 @@
 import tweepy
 import requests
-import os
 import datetime
 from random import randint
 from time import sleep
@@ -13,11 +12,9 @@ class MyStreamListener(tweepy.StreamListener):
         super().__init__(api)
 
     def on_status(self, status):
-        print(status.text)
         if "@DavenBot" in status.text and "#kanye" in status.text \
                 and status.author.screen_name != "DavenBot":
             result = run(api, status)
-            print(result)
 
 
 def get_twitter_api():
@@ -34,7 +31,7 @@ def get_twitter_api():
 def get_kanye_quote():
     r = requests.get(URL)
     json = r.json()
-    print("Quote ready.")
+    print("Quote ready." + json[quote])
     return json['quote']
 
 
@@ -63,8 +60,7 @@ if __name__ == '__main__':
     myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
     myStream.filter(track=["@DavenBot", "#kanye", "@davenbot"], is_async=True)
 
-    while True:
-        print("yes")
+    while True: # Infinite loop so a mention to bot isn't required to tweet
         run(api)
         random_int = randint(3600, 21600) # tweets randomly between 1 - 6 hrs
         time = datetime.timedelta(seconds=random_int)
