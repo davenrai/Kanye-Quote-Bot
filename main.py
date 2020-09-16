@@ -31,7 +31,7 @@ def get_twitter_api():
 def get_kanye_quote():
     r = requests.get(URL)
     json = r.json()
-    print("Quote ready." + json[quote])
+    print("Posting Quote... " + " " + json["quote"])
     return json['quote']
 
 
@@ -64,7 +64,7 @@ if __name__ == '__main__':
         run(api)
         random_int = randint(3600, 21600) # tweets randomly between 1 - 6 hrs
         time = datetime.timedelta(seconds=random_int)
-        print(str(time))
+        print("Waiting for " + str(time))
         sleep(random_int)
 
 
