@@ -1,15 +1,15 @@
 import tweepy
 import requests
 import datetime
+import logging
 from tweepy import *
 from random import randint
 from time import sleep
-
+import os
 from urllib3.exceptions import ReadTimeoutError
 
-from Confidential import *
-
 URL = "https://api.kanye.rest/"
+logger = logging.getLogger()
 
 
 class MyStreamListener(tweepy.StreamListener):
@@ -27,10 +27,17 @@ def get_twitter_api():
     Returns Twitter API.
     :return:
     """
-    bot_auth = OAuthHandler(CONSUMER_KEY, CONSUMER_KEY_SECRET)
-    bot_auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+    consumer_key = os.environ.get("CONSUMER_KEY")
+    consumer_key_secret = os.environ.get("CONSUMER_KEY_SECRET")
+    access_token = os.environ.get("ACCESS_TOKEN")
+    access_token_secret = os.environ.get("ACCESS_TOKEN_SECRET")
+    bot_auth = OAuthHandler(consumer_key, consumer_key_secret)
+    bot_auth.set_access_token(access_token, access_token_secret)
 
-    return tweepy.API(bot_auth, wait_on_rate_limit=True)
+    twitter_api = tweepy.API(bot_auth, wait_on_rate_limit=True)
+
+    logger.info("Created API")
+    return twitter_api
 
 
 def get_kanye_quote():
@@ -50,6 +57,7 @@ def run(api: tweepy.API, tweet=None):
     output_tweet = quote + " -Kanye West"
     try:
         if tweet is not None:
+            print('Tweet is none')
             output_tweet = "@%s %s" % (tweet.author.screen_name, output_tweet)
             result = api.update_status(status=output_tweet,
                                        in_reply_to_status_id=tweet.id)
@@ -71,10 +79,11 @@ if __name__ == '__main__':
             myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
             myStream.filter(track=["@DavenBot", "#kanye", "@davenbot"],
                             is_async=True)
+            print("running...")
             run(api)
 
             # tweets randomly between 1 - 6 hrs
-            random_int = randint(3600, 21600)
+            random_int = randint(21600, 86400)
 
             time = datetime.timedelta(seconds=random_int)
             print("Waiting for " + str(time))
