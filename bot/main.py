@@ -17,9 +17,10 @@ class MyStreamListener(tweepy.StreamListener):
         super().__init__(api)
 
     def on_status(self, status):
-        if "@DavenBot" in status.text and "#kanye" in status.text \
-                and status.author.screen_name != "DavenBot":
-            run(api, status)
+        if "@DavenBot" in status.text or '@davenbot' in status.text:
+            if "#kanye" in status.text \
+                    and status.author.screen_name != "DavenBot":
+                run(api, status)
 
 
 def get_twitter_api():
@@ -57,7 +58,7 @@ def run(api: tweepy.API, tweet=None):
     output_tweet = quote + " -Kanye West"
     try:
         if tweet is not None:
-            print('Tweet is none')
+            print('Replying to user with quote')
             output_tweet = "@%s %s" % (tweet.author.screen_name, output_tweet)
             result = api.update_status(status=output_tweet,
                                        in_reply_to_status_id=tweet.id)
@@ -82,8 +83,8 @@ if __name__ == '__main__':
             print("running...")
             run(api)
 
-            # tweets randomly between 1 - 6 hrs
-            random_int = randint(21600, 86400)
+            # tweets randomly between 24-36 hrs
+            random_int = randint(86400, 129600)
 
             time = datetime.timedelta(seconds=random_int)
             print("Waiting for " + str(time))
